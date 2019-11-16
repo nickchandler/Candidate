@@ -1,12 +1,6 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React from 'react';
+import axios from 'axios';
+import config from './config.js';
 import {
   SafeAreaView,
   StyleSheet,
@@ -30,12 +24,58 @@ class App extends React.Component {
     this.state = {
       houseMembers: [],
       senateMembers: [],
+      memberList: [],
     };
   }
 
+  componentDidMount() {
+    axios
+      .get('https://api.propublica.org/congress/v1/116/senate/members.json')
+      .then(members => {
+        this.setState({senateMembers: members});
+      })
+      .catch(err => {
+        console.log(
+          'there was an error fetching senate members from ProPublica',
+          err,
+        );
+      });
+
+    axios
+      .get('https://api.propublica.org/congress/v1/116/house/members.json')
+      .then(members => {
+        this.setState({houseMembers: members});
+      })
+      .catch(err => {
+        console.log(
+          'there was an error fetching house members from ProPublica',
+          err,
+        );
+      });
+
+    axios
+      .get('http://locahost/mymembers')
+      .then(members => {
+        this.setState({memberList: members});
+      })
+      .catch(err => {
+        console.log('there was an error fetching your members', err);
+      });
+  }
+
   render() {
-    return <Text>Candidate</Text>;
+    return (
+      <View style={styles.container}>
+        <Text>Candidate</Text>
+      </View>
+    );
   }
 }
+
+const styles = {
+  container: {
+    flex: 1,
+  },
+};
 
 export default App;
