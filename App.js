@@ -1,22 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 import config from './config.js';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import {View, Text} from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {FlatList} from 'react-native/Libraries/NewAppScreen';
 
 class App extends React.Component {
   constructor(props) {
@@ -30,7 +17,9 @@ class App extends React.Component {
 
   componentDidMount() {
     axios
-      .get('https://api.propublica.org/congress/v1/116/senate/members.json')
+      .get('https://api.propublica.org/congress/v1/116/senate/members.json', {
+        headers: {'X-API-Key': config.propublicaKey},
+      })
       .then(members => {
         this.setState({senateMembers: members});
       })
@@ -42,7 +31,9 @@ class App extends React.Component {
       });
 
     axios
-      .get('https://api.propublica.org/congress/v1/116/house/members.json')
+      .get('https://api.propublica.org/congress/v1/116/house/members.json', {
+        headers: {'X-API-Key': config.propublicaKey},
+      })
       .then(members => {
         this.setState({houseMembers: members});
       })
@@ -53,20 +44,31 @@ class App extends React.Component {
         );
       });
 
-    axios
-      .get('http://locahost/mymembers')
-      .then(members => {
-        this.setState({memberList: members});
-      })
-      .catch(err => {
-        console.log('there was an error fetching your members', err);
-      });
+    // axios
+    //   .get('http://locahost:3000/mymembers')
+    //   .then(members => {
+    //     this.setState({memberList: members});
+    //   })
+    //   .catch(err => {
+    //     console.log('there was an error fetching your members', err);
+    //   });
   }
 
   render() {
     return (
       <View style={styles.container}>
         <Text>Candidate</Text>
+        <FlatList
+          data={this.state.houseMembers}
+          renderItem={({item}) => (
+            <Item
+              id={item.id}
+              firstName={item.first_name}
+              lastName={item.last_name}
+            />
+          )}>
+          keyExtractor={item => item.id}
+        </FlatList>
       </View>
     );
   }
