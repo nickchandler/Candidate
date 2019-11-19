@@ -1,9 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import config from './config.js';
-import {View, Text} from 'react-native';
-
-import {FlatList} from 'react-native/Libraries/NewAppScreen';
+import {View, Text, TextInput} from 'react-native';
+import MemberList from './components/MemberList.js';
 
 class App extends React.Component {
   constructor(props) {
@@ -11,8 +10,12 @@ class App extends React.Component {
     this.state = {
       houseMembers: [],
       senateMembers: [],
+
       memberList: [],
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
   }
 
   componentDidMount() {
@@ -53,22 +56,40 @@ class App extends React.Component {
     //     console.log('there was an error fetching your members', err);
     //   });
   }
+  handleSearchSubmit(nativeEvent) {
+    let firstName = nativeEvent.text.split('')[0];
+    let lastName = nativeEvent.text.split('')[1];
+    let foundMember = false;
+    for (let member of this.state.allMembers) {
+      if (
+        !foundMember &&
+        member.first_name === firstName &&
+        member.last_name === lastName
+      ) {
+        let newWatchList = this.state.watchList.slice(0);
+        newWatchList.push(member);
+        this.setState({watchList: newWatchList});
+        foundMember = true;
+        //send post request to add member to the database of watched members
+      }
+    }
+    //selecting a member will add themn to the memberList arr and will add them to the database
+  }
+
+  handleChange(value) {
+    this.setState({searchValue: value});
+  }
 
   render() {
     return (
       <View style={styles.container}>
         <Text>Candidate</Text>
-        <FlatList
-          data={this.state.houseMembers}
-          renderItem={({item}) => (
-            <Item
-              id={item.id}
-              firstName={item.first_name}
-              lastName={item.last_name}
-            />
-          )}>
-          keyExtractor={item => item.id}
-        </FlatList>
+        <TextInput
+          onChangeText={this.handleChange}
+          onSubmitEditing={this.handleSearchSubmit}
+          placeholder="Add to Watchlist"
+        />
+        <MemberList members={this.state.memberList} />
       </View>
     );
   }
