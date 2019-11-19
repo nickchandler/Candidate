@@ -23,8 +23,8 @@ class App extends React.Component {
       .get('https://api.propublica.org/congress/v1/116/senate/members.json', {
         headers: {'X-API-Key': config.propublicaKey},
       })
-      .then(members => {
-        this.setState({senateMembers: members});
+      .then(response => {
+        this.setState({senateMembers: response.data.results[0].members});
       })
       .catch(err => {
         console.log(
@@ -37,8 +37,8 @@ class App extends React.Component {
       .get('https://api.propublica.org/congress/v1/116/house/members.json', {
         headers: {'X-API-Key': config.propublicaKey},
       })
-      .then(members => {
-        this.setState({houseMembers: members});
+      .then(response => {
+        this.setState({houseMembers: response.data.results[0].members});
       })
       .catch(err => {
         console.log(
@@ -56,11 +56,11 @@ class App extends React.Component {
     //     console.log('there was an error fetching your members', err);
     //   });
   }
-  handleSearchSubmit(nativeEvent) {
-    let firstName = nativeEvent.text.split('')[0];
-    let lastName = nativeEvent.text.split('')[1];
+  handleSearchSubmit(event) {
+    let firstName = event.nativeEvent.text.split('')[0];
+    let lastName = event.nativeEvent.text.split('')[1];
     let foundMember = false;
-    for (let member of this.state.allMembers) {
+    for (let member of this.state.senateMembers) {
       if (
         !foundMember &&
         member.first_name === firstName &&
@@ -73,6 +73,21 @@ class App extends React.Component {
         //send post request to add member to the database of watched members
       }
     }
+    if (!foundMember) {
+      for (let member of this.state.houseMembers) {
+        if (
+          !foundMember &&
+          member.first_name === firstName &&
+          member.last_name === lastName
+        ) {
+          let newWatchList = this.state.watchList.slice(0);
+          newWatchList.push(member);
+          this.setState({watchList: newWatchList});
+          foundMember = true;
+          //send post request to add member to the database of watched members
+        }
+      }
+    }
     //selecting a member will add themn to the memberList arr and will add them to the database
   }
 
@@ -83,6 +98,22 @@ class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Text>
+          {this.state.houseMembers[0]
+            ? this.state.houseMembers[0].first_name
+            : 'hi'}
+          {this.state.houseMembers[0]
+            ? this.state.houseMembers[0].last_name
+            : 'there'}
+        </Text>
+        <Text>
+          {this.state.senateMembers[0]
+            ? this.state.senateMembers[0].first_name
+            : 'hi'}
+          {this.state.senateMembers[0]
+            ? this.state.senateMembers[0].last_name
+            : 'there'}
+        </Text>
         <Text>Candidate</Text>
         <TextInput
           onChangeText={this.handleChange}
@@ -98,6 +129,9 @@ class App extends React.Component {
 const styles = {
   container: {
     flex: 1,
+    top: 100,
+    justifyItems: 'center',
+    alignItems: 'center',
   },
 };
 
