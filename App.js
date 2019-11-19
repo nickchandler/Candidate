@@ -14,6 +14,7 @@ class App extends React.Component {
       watchList: [],
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
   }
@@ -47,14 +48,14 @@ class App extends React.Component {
         );
       });
 
-    // axios
-    //   .get('http://locahost:3000/mymembers')
-    //   .then(members => {
-    //     this.setState({memberList: members});
-    //   })
-    //   .catch(err => {
-    //     console.log('there was an error fetching your members', err);
-    //   });
+    axios
+      .get('http://localhost:3000/myMembers')
+      .then(members => {
+        this.setState({watchList: members.data});
+      })
+      .catch(err => {
+        console.log('there was an error fetching your members', err);
+      });
   }
   handleSearchSubmit(event) {
     let firstName = event.nativeEvent.text.split(' ')[0];
@@ -70,6 +71,14 @@ class App extends React.Component {
         newWatchList.push(member);
         this.setState({watchList: newWatchList});
         foundMember = true;
+        axios
+          .post('http://localhost:3000/myMembers', member)
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => {
+            console.log(err);
+          });
         //send post request to add member to the database of watched members
       }
     }
@@ -84,11 +93,37 @@ class App extends React.Component {
           newWatchList.push(member);
           this.setState({watchList: newWatchList});
           foundMember = true;
+          axios
+            .post('http://localhost:3000/myMembers', member)
+            .then(res => {
+              console.log(res);
+            })
+            .catch(err => {
+              console.log(err);
+            });
           //send post request to add member to the database of watched members
         }
       }
     }
     //selecting a member will add themn to the memberList arr and will add them to the database
+  }
+
+  handleDelete(id) {
+    axios
+      .delete('http://localhost:3000/myMembers', {data: {id}})
+      .then(res => {
+        console.log(res);
+        let watchCopy = this.state.watchList.slice(0);
+        for (let i = 0; i < watchCopy.length; i++) {
+          if (watchCopy[i].id === id) {
+            watchCopy.splice(i, 1);
+          }
+        }
+        this.setState({watchList: watchCopy});
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   handleChange(value) {
@@ -98,7 +133,7 @@ class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>
+        {/* <Text>
           {this.state.houseMembers[4]
             ? this.state.houseMembers[4].first_name
             : 'hi'}
@@ -113,14 +148,18 @@ class App extends React.Component {
           {this.state.senateMembers[4]
             ? this.state.senateMembers[4].last_name
             : 'there'}
-        </Text>
+        </Text> */}
         <Text>Candidate</Text>
         <TextInput
           onChangeText={this.handleChange}
           onSubmitEditing={this.handleSearchSubmit}
           placeholder="Add to Watchlist"
         />
-        <MemberList members={this.state.watchList} />
+        <MemberList
+          members={this.state.watchList}
+          delete={this.handleDelete}
+          tyle={styles.memList}
+        />
       </View>
     );
   }

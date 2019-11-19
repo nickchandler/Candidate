@@ -7,7 +7,7 @@ let MemberList = function(props) {
     <FlatList
       data={props.members}
       renderItem={({item}) => {
-        return <MemberCard member={item} key={item.id} />;
+        return <MemberCard member={item} delete={props.delete} key={item.id} />;
       }}
     />
   );
