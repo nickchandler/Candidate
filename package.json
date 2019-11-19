@@ -16,7 +16,8 @@
     "mongoose": "^5.7.11",
     "nodemon": "^1.19.4",
     "react": "16.9.0",
-    "react-native": "0.61.4"
+    "react-native": "0.61.4",
+    "react-native-autocomplete-search": "^1.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
