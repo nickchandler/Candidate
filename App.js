@@ -11,7 +11,7 @@ class App extends React.Component {
       houseMembers: [],
       senateMembers: [],
 
-      memberList: [],
+      watchList: [],
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
@@ -57,8 +57,8 @@ class App extends React.Component {
     //   });
   }
   handleSearchSubmit(event) {
-    let firstName = event.nativeEvent.text.split('')[0];
-    let lastName = event.nativeEvent.text.split('')[1];
+    let firstName = event.nativeEvent.text.split(' ')[0];
+    let lastName = event.nativeEvent.text.split(' ')[1];
     let foundMember = false;
     for (let member of this.state.senateMembers) {
       if (
@@ -99,19 +99,19 @@ class App extends React.Component {
     return (
       <View style={styles.container}>
         <Text>
-          {this.state.houseMembers[0]
-            ? this.state.houseMembers[0].first_name
+          {this.state.houseMembers[4]
+            ? this.state.houseMembers[4].first_name
             : 'hi'}
-          {this.state.houseMembers[0]
-            ? this.state.houseMembers[0].last_name
+          {this.state.houseMembers[4]
+            ? this.state.houseMembers[4].last_name
             : 'there'}
         </Text>
         <Text>
-          {this.state.senateMembers[0]
-            ? this.state.senateMembers[0].first_name
+          {this.state.senateMembers[4]
+            ? this.state.senateMembers[4].first_name
             : 'hi'}
-          {this.state.senateMembers[0]
-            ? this.state.senateMembers[0].last_name
+          {this.state.senateMembers[4]
+            ? this.state.senateMembers[4].last_name
             : 'there'}
         </Text>
         <Text>Candidate</Text>
@@ -120,7 +120,7 @@ class App extends React.Component {
           onSubmitEditing={this.handleSearchSubmit}
           placeholder="Add to Watchlist"
         />
-        <MemberList members={this.state.memberList} />
+        <MemberList members={this.state.watchList} />
       </View>
     );
   }

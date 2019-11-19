@@ -1,19 +1,20 @@
 import React from 'react';
-import {Stylesheet, FlatList, View} from 'react-native';
-import MemberCard from './MemberCard';
+import {FlatList} from 'react-native';
+import MemberCard from './MemberCard.js';
 
 let MemberList = function(props) {
   return (
     <FlatList
       data={props.members}
-      renderItem={({member}) => {
-        <MemberCard member={member} />;
+      renderItem={({item}) => {
+        return <MemberCard member={item} key={item.id} />;
       }}
-      keyExtractor={member => member.member_id}
     />
   );
 };
 
-const styles = Stylesheet.create({});
+// const styles = Stylesheet.create({
+//   memberCard: {},
+// });
 
 export default MemberList;
