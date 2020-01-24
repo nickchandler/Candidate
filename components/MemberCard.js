@@ -1,25 +1,33 @@
 import React from 'react';
-import {View, Text, Image, Stylesheet} from 'react-native';
+import {View, Text, Image, Button} from 'react-native';
+import axios from 'axios';
 
 let MemberCard = function(props) {
   return (
     <View>
-      <Text style={styles.cardHeader}>
+      <Text>
         {props.member.short_title} {props.member.first_name}{' '}
         {props.member.last_name}, {props.member.party}-{props.member.state}
       </Text>
       <Image
-        // eslint-disable-next-line prettier/prettier
-        src={`https://theunitedstates.io/images/congress/original/${props.member.member_id}.jpg`}
-        style={styles.memberImage}
+        style={{width: 100, height: 100}}
+        source={{
+          uri: `https://theunitedstates.io/images/congress/original/${props.member.id}.jpg`,
+        }}
+      />
+      <Button
+        title="Remove"
+        onPress={() => {
+          props.delete(props.member.id);
+        }}
       />
     </View>
   );
 };
 
-const styles = Stylesheet.create({
-  cardHeader: {},
-  memberImage: {},
-});
+// const styles = Stylesheet.create({
+//   cardHeader: {},
+//   memberImage: {},
+// });
 
 export default MemberCard;
