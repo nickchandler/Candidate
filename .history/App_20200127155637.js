@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import config from './config.js';
 import {View, Text, TextInput} from 'react-native';
-import MemberList from './src/components/MemberList.js';
+import MemberList from './src/components/MemberList.js.js';
 
 class App extends React.Component {
   constructor(props) {
