@@ -50,13 +50,29 @@ MVP:
 All candidates information:
 
 Watchlist / follow ability
-  Top of watchlist displays poll with polling data for followed members
+Top of watchlist displays poll with polling data for followed members
 
-  Touching candidate will lead to candidate info page
-    Info page: recentTweets, segmented Flatlist with basicInfo, voteInfo, officeInfo, 
+Touching candidate will lead to candidate info page
+Info page: recentTweets, segmented Flatlist with basicInfo, voteInfo, officeInfo,
 
-    
+API DESIGN:
 
+Endpoints:
 
+/figures
+--endpoint which serves as point to fetch basic data for all listed candidates
 
+/figures/following
+--GET req will respond with list of candidate IDs which correspond to candidates the user had previously selected to follow
 
+/figures/changeStatus
+--Request body requirements:
+candidateId: id
+status: status
+--PUT request to this endpoint will update the follow status of the candidate to the opposite its current status
+
+/figures/:candidateID/data/polls
+--GET request to this endpoint will send request to Pollster API for recent polling data. Response TBD
+
+/figures/:candidateID/data/propub
+--GET request to this endpoint will fetch data from Propublica API. If response is an error (candidate is not in Congress), response will contain no data.
